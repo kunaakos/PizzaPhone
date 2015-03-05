@@ -1,0 +1,19 @@
+// soundbite folder names
+#define EGYESEK 2
+#define TIZESEK 1
+#define TIZENESEK 3
+#define SZAZASOK 4
+#define MONDATRESZEK 20
+#define HIBAUZENETEK 10
+
+// MONDATRESZEK folder
+#define SZO_ORA 1
+#define SZO_ORARA 5
+#define SZO_PERC 2
+#define SZO_PERCRE 6
+#define A_PONTOS_IDO 3
+#define EBRESZTOORA_NINCS_BEALLITVA 8
+#define TARCSAZDBE_EBRESZTES 9
+#define UJ_EBRESZTES_IDOPONT 10
+#define AZ_EBRESZTOORA 4
+#define VAN_BEALLITVA 7

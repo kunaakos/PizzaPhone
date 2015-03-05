@@ -12,6 +12,7 @@
 #include "hook.h"
 #include "clock.h"
 #include "bell.h"
+#include "speak.h"
 
 #define DEBUG
 
@@ -20,6 +21,7 @@ DIAL dial;
 HOOK hook;
 CLOCK clock;
 BELL bell;
+SPEAK speak;
 
 void setup()
 {
@@ -33,12 +35,10 @@ void setup()
     hook.init();
     clock.init();
     bell.init();
+    speak.init();
 
     #ifdef DEBUG
     Serial.println("Initialized.");
-    time_t alarmTime = clock.getAlarm();
-    Serial.println(hour(alarmTime));
-    Serial.println(minute(alarmTime));
     bell.status(true);
     #endif
 }
@@ -48,27 +48,29 @@ void loop()
     sound.check();
     dial.check();
     hook.check();
+    clock.check();
     bell.check();
+    speak.check();
 
     uint8_t hookState = hook.state();
     
-    if (!sound.isPlaying() && hookState == 3)
+    if (hookState == 3)
     {
         #ifdef DEBUG
-        Serial.println("Picked up.");
         bell.status(false);
+        Serial.println("Picked up.");
         #endif
-
-        sound.startPlaying(20, 8);
+        speak.currentTime(hour(), minute());
     }
 
-    if (dial.available())
+    if (dial.available() && (hookState == 3 || hookState == 1))
     {
         #ifdef DEBUG
         Serial.print("dialed: ");
         Serial.println(dial.lastNumber());
         #endif
 
+        speak.stopSpeaking();
         sound.stopPlaying();
     }
 
@@ -79,6 +81,13 @@ void loop()
         bell.status(true);
         #endif
 
+        speak.stopSpeaking();
         sound.stopPlaying();
+    }
+
+    if ((hookState == 3 || hookState == 1) && speak.isSpeaking() && !sound.isPlaying())
+    {
+        sound.startPlaying(speak.soundBiteFolderNr(), speak.soundBiteFileNr());
+        speak.nextSoundBite();
     }
 }

@@ -9,6 +9,8 @@
 #define CMD_PLAY_FOLDER_FILENAME 0X0F
 #define CMD_STOP 0X16
 
+#define DEBUG
+
 SoftwareSerial soundSerial(5,6);
 
 SOUND::SOUND()
@@ -21,7 +23,7 @@ void SOUND::init()
     soundSerial.begin(9600);
     delay(200); // wait until chip initialization is complete
     sendCommand(CMD_SEL_DEV, DEV_TF, false); // select the TF card
-    sendCommand(CMD_SET_VOLUME, 30, false); // lower volume *dev only* 
+    sendCommand(CMD_SET_VOLUME, 30, false);
     delay(200); // wait for 200ms
 }
 
@@ -52,6 +54,12 @@ void SOUND::check()
 
 void SOUND::startPlaying(uint8_t folder, uint8_t file)
 {
+    #ifdef DEBUG
+    Serial.print("SOUND - playing soundbite from queue: ");
+    Serial.print(folder);
+    Serial.print(" ");
+    Serial.println(file);
+    #endif
     uint16_t folderFile = (folder << 8) | file;
     sendCommand( CMD_PLAY_FOLDER_FILENAME , folderFile, true);
     playing = true;
