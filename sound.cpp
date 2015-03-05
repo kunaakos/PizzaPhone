@@ -3,13 +3,13 @@
 
 #include "sound.h"
 
+#include "debug.h"
+
 #define CMD_SEL_DEV 0X09
 #define DEV_TF 0X02
 #define CMD_SET_VOLUME 0X06
 #define CMD_PLAY_FOLDER_FILENAME 0X0F
 #define CMD_STOP 0X16
-
-#define DEBUG
 
 SoftwareSerial soundSerial(5,6);
 
@@ -60,6 +60,7 @@ void SOUND::startPlaying(uint8_t folder, uint8_t file)
     Serial.print(" ");
     Serial.println(file);
     #endif
+
     uint16_t folderFile = (folder << 8) | file;
     sendCommand( CMD_PLAY_FOLDER_FILENAME , folderFile, true);
     playing = true;

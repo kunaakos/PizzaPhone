@@ -14,7 +14,7 @@
 #include "bell.h"
 #include "speak.h"
 
-#define DEBUG
+#include "debug.h"
 
 SOUND sound;
 DIAL dial;
@@ -54,15 +54,18 @@ void loop()
 
     uint8_t hookState = hook.state();
     
+    // picked up hook
     if (hookState == 3)
     {
         #ifdef DEBUG
         bell.status(false);
         Serial.println("Picked up.");
         #endif
+
         speak.currentTime(hour(), minute());
     }
 
+    // dialed a number while receiver is picked up
     if (dial.available() && (hookState == 3 || hookState == 1))
     {
         #ifdef DEBUG
@@ -74,6 +77,7 @@ void loop()
         sound.stopPlaying();
     }
 
+    // hung up
     if (hookState == 2)
     {
         #ifdef DEBUG
@@ -85,7 +89,8 @@ void loop()
         sound.stopPlaying();
     }
 
-    if ((hookState == 3 || hookState == 1) && speak.isSpeaking() && !sound.isPlaying())
+    // play stuff if there is stuff to play
+    if (speak.isSpeaking() && !sound.isPlaying())
     {
         sound.startPlaying(speak.soundBiteFolderNr(), speak.soundBiteFileNr());
         speak.nextSoundBite();

@@ -3,7 +3,7 @@
 #include "speak.h"
 #include "SBDefines_HU.h"
 
-#define DEBUG
+#include "debug.h"
 
 SPEAK::SPEAK()
 {
@@ -89,6 +89,7 @@ void SPEAK::currentTime(uint8_t hours, uint8_t minutes)
 	#ifdef DEBUG
 	Serial.println("SPEAK - queuing current time.");
 	#endif
+
 	// A pontos ido...
 	addToQueue(MONDATRESZEK, A_PONTOS_IDO);
 	sayTime(hours, minutes, false);
