@@ -23,6 +23,8 @@ CLOCK clock;
 BELL bell;
 SPEAK speak;
 
+time_t alarmTime;
+
 void setup()
 {
     #ifdef DEBUG
@@ -39,12 +41,12 @@ void setup()
 
     #ifdef DEBUG
     Serial.println("Initialized.");
-    bell.status(true);
     #endif
 }
 
 void loop()
 {
+
     sound.check();
     dial.check();
     hook.check();
@@ -58,11 +60,29 @@ void loop()
     if (hookState == 3)
     {
         #ifdef DEBUG
-        bell.status(false);
         Serial.println("Picked up.");
         #endif
 
+        bell.state(false); // bell must stop, no matter what
         speak.currentTime(hour(), minute());
+
+        alarmTime = clock.alarmTime();
+
+        switch (clock.alarmState()) {
+            case ALARM_OFF:
+                speak.alarmSettings();
+                break;
+            case ALARM_ACTIVE:
+                speak.alarmSettings(hour(alarmTime), minute(alarmTime));
+                break;
+            case ALARM_SNOOZED:
+                speak.alarmSettings(hour(alarmTime), minute(alarmTime));
+                break;
+            case ALARM_TRIGGERED:
+                // snooze/deactivate routine
+                clock.snoozeAlarm(2);
+                break;
+        }
     }
 
     // dialed a number while receiver is picked up
@@ -82,7 +102,6 @@ void loop()
     {
         #ifdef DEBUG
         Serial.println("Hung up.");
-        bell.status(true);
         #endif
 
         speak.stopSpeaking();

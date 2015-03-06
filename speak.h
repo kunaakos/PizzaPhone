@@ -1,3 +1,5 @@
+#define QUEUE_LENGTH 20
+
 class SPEAK
 {
     public:
@@ -13,9 +15,9 @@ class SPEAK
         uint8_t soundBiteFileNr();
 
         void currentTime(uint8_t hours, uint8_t minutes);
-        void alarmStatus();
-        void alarmStatus(uint8_t hours, uint8_t minutes);
-        void promptForNewAlarmTime();
+        void alarmSettings();
+        void alarmSettings(uint8_t hours, uint8_t minutes);
+        void promptForNewAlarmSettings();
         void errorMessage(uint8_t error);
 
     private:
@@ -25,7 +27,7 @@ class SPEAK
         void sayNumber(uint8_t number, bool szamnev);
 
         bool speaking = false;
-        uint8_t queue[10][2];
+        uint8_t queue[QUEUE_LENGTH][2];
         uint8_t queueIndex = 0;
         uint8_t playIndex = 0;
 };

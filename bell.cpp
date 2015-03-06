@@ -25,7 +25,7 @@ void BELL::check()
     phoneBell.update();
 }
 
-void BELL::status(bool ringing)
+void BELL::state(bool ringing)
 {
     isRinging = ringing;
     if (isRinging)
@@ -38,7 +38,7 @@ void BELL::status(bool ringing)
     }
 }
 
-bool BELL::status()
+bool BELL::state()
 {
     return isRinging;
 }

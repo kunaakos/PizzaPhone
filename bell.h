@@ -6,8 +6,8 @@ class BELL
         void init();
         void check();
 
-        void status(bool ringing);
-        bool status();
+        void state(bool ringing);
+        bool state();
 
     private:
         bool isRinging = false;

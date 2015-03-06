@@ -43,7 +43,7 @@ bool SPEAK::isSpeaking()
 void SPEAK::nextSoundBite()
 {
 	playIndex++;
-	if (playIndex > 10 || playIndex > queueIndex )
+	if (playIndex > QUEUE_LENGTH || playIndex >= queueIndex )
 	{
 		stopSpeaking();
 	}
@@ -68,7 +68,7 @@ bool SPEAK::addToQueue(uint8_t folderNr, uint8_t fileNr)
 	Serial.println(fileNr);
 	#endif
 
-	if (queueIndex < 10)
+	if (queueIndex < QUEUE_LENGTH)
 	{
 		queue[queueIndex][0] = folderNr;
 		queue[queueIndex][1] = fileNr;
@@ -80,7 +80,6 @@ bool SPEAK::addToQueue(uint8_t folderNr, uint8_t fileNr)
 		return false; // queue full
 	}
 }
-
 
 // Each of these methods queues a complete sentence
 
@@ -95,17 +94,19 @@ void SPEAK::currentTime(uint8_t hours, uint8_t minutes)
 	sayTime(hours, minutes, false);
 }
 
-void SPEAK::alarmStatus()
+void SPEAK::alarmSettings()
 {
-
+  addToQueue(MONDATRESZEK, EBRESZTOORA_NINCS_BEALLITVA);
 }
 
-void SPEAK::alarmStatus(uint8_t hours, uint8_t minutes)
+void SPEAK::alarmSettings(uint8_t hours, uint8_t minutes)
 {
-
+  addToQueue(MONDATRESZEK, AZ_EBRESZTOORA);
+  sayTime(hours, minutes, true);
+  addToQueue(MONDATRESZEK, VAN_BEALLITVA);
 }
 
-void SPEAK::promptForNewAlarmTime()
+void SPEAK::promptForNewAlarmSettings()
 {
 
 }
