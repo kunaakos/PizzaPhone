@@ -77,7 +77,7 @@ void CLOCK::alarmTime(uint8_t hours, uint8_t minutes)
     #ifdef DEBUG
     Serial.print("CLOCK - setting alarm to: ");
     Serial.print(hours);
-    Serial.print(" ");
+    Serial.print(":");
     Serial.println(minutes);
     #endif
 
@@ -115,7 +115,7 @@ time_t CLOCK::alarmTime()
     // return RTC.getAlarm(ALARM_2); // FUCK THIS THING
 }
 
-void CLOCK::alarmState(bool newState)
+void CLOCK::alarmState(uint8_t newState)
 {
     currentAlarmState = newState;
 }

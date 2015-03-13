@@ -20,6 +20,6 @@ class CLOCK
 
     private:
         uint8_t currentAlarmState = 0;
-        void alarmState(bool newState);
+        void alarmState(uint8_t newState);
         uint8_t bcd2dec(uint8_t n);
 };
