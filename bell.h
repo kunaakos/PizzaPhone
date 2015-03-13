@@ -1,3 +1,6 @@
+#define RINGING true
+#define NOT_RINGING false
+
 class BELL
 {
     public:

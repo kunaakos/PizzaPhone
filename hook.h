@@ -1,3 +1,8 @@
+#define HUNG_UP 0
+#define PICKED_UP 1
+#define JUST_HUNG_UP 2
+#define JUST_PICKED_UP 3
+
 class HOOK
 {
     public:
