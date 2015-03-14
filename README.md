@@ -14,7 +14,7 @@ Well, duh. Final hardware will run on a custom-built board (needs to fit), but I
 Cheapest sound module I could find, some of the documentation is Chinese-only. Easy to use, but has a lot of drawbacks (file/folder names, limited control options, poor sound). Get something else if you can.
 
 ####DS3231N based RTC module
-Using [my fork](https://github.com/kunaakos/DS3232RTC) of [JChristensen's library](https://github.com/JChristensen/DS3232RTC), I'll see if I can get my code pulled. Added method to read alarm times from RTC.
+Using [JChristensen's library](https://github.com/JChristensen/DS3232RTC).
 
 ####Phone Dial
 Using [my fork](https://github.com/kunaakos/RotaryDialMM) of [markfickett's library](https://github.com/markfickett/Rotary-Dial). This is *not compatible with the original*, the dials are a bit different and I rewrote a lot of the original library.
