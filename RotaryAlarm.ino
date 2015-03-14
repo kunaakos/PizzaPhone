@@ -94,10 +94,12 @@ void justPickedUp()
         case ALARM_OFF:
             speak.currentTime(hour(), minute());
             speak.alarmOff();
+            inputHelper.startReadingTime();
             break;
         case ALARM_ACTIVE:
             speak.currentTime(hour(), minute());
             speak.alarmSetTo(hour(alarmTime), minute(alarmTime));
+            inputHelper.startReadingTime();
             break;
         case ALARM_SNOOZED:
             speak.alarmSnoozed(inputHelper.startReadingCode());
@@ -110,6 +112,8 @@ void justPickedUp()
 
 void pickedUp()
 {
+    time_t alarmTime;
+
     if (dial.available())
     {
         speak.stopSpeaking();
@@ -142,7 +146,8 @@ void pickedUp()
                 break;
 
             case TIME_OK:
-                // l8rz
+                alarmTime = inputHelper.getTime();
+                clock.setAlarm(hour(alarmTime), minute(alarmTime));
                 break;
 
             case NUMBER_OK:

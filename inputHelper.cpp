@@ -72,7 +72,19 @@ uint8_t INPUTHELPER::validateCode(uint8_t digit)
 
 uint8_t INPUTHELPER::validateTime(uint8_t digit)
 {
+    timeDigits[timeDigitsIndex++] = digit;
 
+    if (timeDigitsIndex >= 4)
+    {
+        timeHours = timeDigits[0] * 10 + timeDigits[1];
+        timeMinutes = timeDigits[2] * 10 + timeDigits[3];
+        if (timeHours < 24 && timeMinutes < 60)
+            currentStatus = TIME_OK;
+        else
+            currentStatus = TIME_INCORRECT;
+    }
+
+    return digit;
 }
 
 
@@ -80,12 +92,34 @@ void INPUTHELPER::startReadingTime()
 {
     // reset index and set status
     timeDigitsIndex = 0;
+    timeHours = 0;
+    timeMinutes = 0;
     currentStatus = READING_TIME;
 }
 
 time_t INPUTHELPER::getTime()
 {
-    // l8rz
+    tmElements_t tmE;
+
+    tmE.Second = 0;
+    tmE.Minute = timeMinutes;
+    tmE.Hour = timeHours;
+
+    // these will need real values, but fuck them for now
+    tmE.Wday = weekday();
+    tmE.Day = day();
+    tmE.Month = month();
+    tmE.Year = year() - 1970;
+
+    #ifdef DEBUG
+    time_t tm = makeTime(tmE);
+    Serial.print("INPUTHELPER - read time: ");
+    Serial.print(hour(tm));
+    Serial.print(":");
+    Serial.println(minute(tm));
+    #endif
+
+    return makeTime(tmE);
 }
 
 uint8_t INPUTHELPER::startReadingCode()

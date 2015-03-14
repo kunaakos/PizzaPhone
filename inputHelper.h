@@ -36,6 +36,8 @@ class INPUTHELPER
         uint8_t numberMaxVal;
         uint8_t timeDigits[4];
         uint8_t timeDigitsIndex;
+        uint8_t timeHours;
+        uint8_t timeMinutes;
         uint8_t currentStatus = 0;
 
         uint8_t validateNumber(uint8_t digit);
