@@ -29,7 +29,7 @@ void setup()
 {
     #ifdef DEBUG
     Serial.begin(9600);
-    Serial.println("=============================");
+    Serial.println("=============================================");
     Serial.println("SETUP - Begin init.");
     #endif
 
@@ -45,7 +45,7 @@ void setup()
 
     #ifdef DEBUG
     Serial.println("SETUP - Initialized.");
-    Serial.println("=============================");
+    Serial.println("=============================================");
 
     // setting test alarm!
     clock.setAlarm(hour(), minute()+1);

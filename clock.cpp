@@ -28,7 +28,6 @@ void CLOCK::init()
 
 void CLOCK::check()
 {
-    // fucky, need to read interrupts
     if ( RTC.alarm(ALARM_2) && (currentAlarmState != ALARM_OFF) ) {
         alarmState(ALARM_TRIGGERED);
     }
@@ -52,9 +51,12 @@ void CLOCK::snoozeAlarm(uint8_t minutesToSnooze)
     uint8_t minutes = minute();
     uint8_t hours = hour();
 
+    if (minutesToSnooze > 60)
+        minutesToSnooze = 60;
+
     minutes += minutesToSnooze;
 
-    if (minutesToSnooze >= 59)
+    if (minutes >= 59)
     {
         minutes -= 60;
 
@@ -87,7 +89,7 @@ void CLOCK::alarmTime(uint8_t hours, uint8_t minutes)
 time_t CLOCK::alarmTime()
 {
     tmElements_t tmE;
-    uint8_t values[3];
+    uint8_t values[2];
 
     RTC.readRTC(ALM2_MINUTES, values, 2);
 
@@ -106,9 +108,7 @@ time_t CLOCK::alarmTime()
     Serial.print("CLOCK - read alarm settings: ");
     Serial.print(hour(tm));
     Serial.print(":");
-    Serial.print(minute(tm));
-    Serial.print(":");
-    Serial.println(second(tm));
+    Serial.println(minute(tm));
     #endif
 
     return makeTime(tmE);
