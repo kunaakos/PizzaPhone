@@ -124,17 +124,20 @@ void SPEAK::promptForDeactivationCode(uint8_t code)
   addToQueue(MONDATRESZEK, KODOT);
 }
 
-void SPEAK::errorMessage(uint8_t error)
+void SPEAK::message(uint8_t message)
 {
-  #ifdef DEBUG
-  Serial.println("SPEAK - playing error message");
-  #endif
-}
+  // THIS IS SOOO NOT FINAL
+  switch(message) {
+    case 11: // got code, alarm deactivated succesfully
+      addToQueue(MONDATRESZEK, SIKERESEN_KIKAPCSOLTAD);
+      break;
+    case 12: // wrong code, try again with a new code
+      addToQueue(MONDATRESZEK, HIBASKOD_PROBALKOZZUJRA_UJKODDAL);
+      break;
+  }
 
-void SPEAK::successMessage(uint8_t message)
-{
   #ifdef DEBUG
-  Serial.println("SPEAK - playing success message");
+  Serial.println("SPEAK - playing err/succ msg");
   #endif
 }
 

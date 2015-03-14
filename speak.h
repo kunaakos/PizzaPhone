@@ -20,8 +20,7 @@ class SPEAK
         void alarmSnoozed(uint8_t code);
         void alarmSetTo(uint8_t hours, uint8_t minutes);
         void promptForDeactivationCode(uint8_t code);
-        void errorMessage(uint8_t error);
-        void successMessage(uint8_t message);
+        void message(uint8_t message);
         void sayNumber(uint8_t number);
 
     private:

@@ -121,41 +121,43 @@ void pickedUp()
 
         if (inputHelper.isReading())
             inputHelper.addDigit(dial.lastNumber());
+        else
+            dial.lastNumber(); // dump number
     }
 
     if (inputHelper.hasResult())
     {
         switch (inputHelper.status()) {
             case CODE_OK:
-                clock.unSetAlarm();
-                speak.successMessage(NULL);
-
                 #ifdef DEBUG
                 Serial.println("MAIN - Alarm deactivated.");
                 #endif
 
+                clock.unSetAlarm();
+                speak.message(CODE_OK);
+                inputHelper.stopReading();
                 break;
 
             case CODE_INCORRECT:
-                speak.errorMessage(NULL);
-
                 #ifdef DEBUG
                 Serial.println("MAIN - Incorrect deactivation code.");
                 #endif
 
+                speak.message(CODE_INCORRECT);
+                speak.promptForDeactivationCode(inputHelper.startReadingCode());
                 break;
 
             case TIME_OK:
                 alarmTime = inputHelper.getTime();
                 clock.setAlarm(hour(alarmTime), minute(alarmTime));
+                speak.alarmSetTo(hour(alarmTime), minute(alarmTime));
+                inputHelper.stopReading();
                 break;
 
             case NUMBER_OK:
                 // l8rz
                 break;
         }
-
-        inputHelper.stopReading();
     }
 }
 
@@ -174,6 +176,7 @@ void justHungUp()
         #endif
     }
 
+    // just in case...
     inputHelper.stopReading();
     speak.stopSpeaking();
     sound.stopPlaying();
