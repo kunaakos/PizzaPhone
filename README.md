@@ -4,7 +4,7 @@
 
 Vintage **rotary phone** converted to a speaking **alarm clock**. Acts and feels like a ["wake-up call"/"morning call" service](http://en.wikipedia.org/wiki/Wake-up_call_%28service%29) : pick up the receiver, listen to a robot voice, dial in your settings, hang up, get a call when it's time to wake up. Clumsier and less reliable than any mobile phone in existence.
 
-##What was used
+##Hardware
 
 #### Arduino
 
@@ -23,4 +23,4 @@ Using [my fork](https://github.com/kunaakos/RotaryDialMM) of [markfickett's libr
 It's a button. You can replace it with a regular button.
 
 #### Phone Bell
-**Not yet implemented.** Using [my own library](https://github.com/kunaakos/PhoneBell), which is a mess. The bell needs at least 9V to function properly, has coils and stuff, so can't connect it directly to the microcontroller. I'm using a cheap motor controller board (it's an H-bridge, basically).
+Using [my own library](https://github.com/kunaakos/PhoneBell), which is a mess.
