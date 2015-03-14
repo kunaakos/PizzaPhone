@@ -55,10 +55,13 @@ void SOUND::check()
 void SOUND::startPlaying(uint8_t folder, uint8_t file)
 {
     #ifdef DEBUG
-    Serial.print("SOUND - playing soundbite from queue: ");
-    Serial.print(folder);
-    Serial.print(" ");
-    Serial.println(file);
+    if (DEBUG)
+    {
+        Serial.print("SOUND - playing soundbite from queue: ");
+        Serial.print(folder);
+        Serial.print(" ");
+        Serial.println(file);
+    }
     #endif
 
     uint16_t folderFile = (folder << 8) | file;

@@ -1,4 +1,5 @@
 #define QUEUE_LENGTH 20
+#define ERRORMSG_GENERIC_SHORT 1
 
 class SPEAK
 {
@@ -15,10 +16,13 @@ class SPEAK
         uint8_t soundBiteFileNr();
 
         void currentTime(uint8_t hours, uint8_t minutes);
-        void alarmSettings();
-        void alarmSettings(uint8_t hours, uint8_t minutes);
-        void promptForNewAlarmSettings();
+        void alarmOff();
+        void alarmSnoozed(uint8_t code);
+        void alarmSetTo(uint8_t hours, uint8_t minutes);
+        void promptForDeactivationCode(uint8_t code);
         void errorMessage(uint8_t error);
+        void successMessage(uint8_t message);
+        void sayNumber(uint8_t number);
 
     private:
         void startSpeaking();

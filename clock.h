@@ -22,4 +22,5 @@ class CLOCK
         uint8_t currentAlarmState = 0;
         void alarmState(uint8_t newState);
         uint8_t bcd2dec(uint8_t n);
+        uint8_t readA2IE();
 };

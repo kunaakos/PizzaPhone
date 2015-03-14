@@ -13,6 +13,7 @@
 #include "clock.h"
 #include "bell.h"
 #include "speak.h"
+#include "inputHelper.h"
 
 #include "debug.h"
 
@@ -22,15 +23,17 @@ HOOK hook;
 CLOCK clock;
 BELL bell;
 SPEAK speak;
-
-time_t alarmTime;
+INPUTHELPER inputHelper;
 
 void setup()
 {
     #ifdef DEBUG
     Serial.begin(9600);
-    Serial.println("Begin init.");
+    Serial.println("=============================");
+    Serial.println("SETUP - Begin init.");
     #endif
+
+    randomSeed(analogRead(A0));
 
     sound.init();
     dial.init();
@@ -38,77 +41,153 @@ void setup()
     clock.init();
     bell.init();
     speak.init();
+    inputHelper.init();
 
     #ifdef DEBUG
-    Serial.println("Initialized.");
+    Serial.println("SETUP - Initialized.");
+    Serial.println("=============================");
+
+    // setting test alarm!
+    clock.setAlarm(hour(), minute()+1);
     #endif
 }
 
 void loop()
 {
-
     sound.check();
     dial.check();
     hook.check();
     clock.check();
     bell.check();
     speak.check();
+    inputHelper.check();
 
-    uint8_t hookState = hook.state();
+    switch(hook.state()) {
+        case JUST_PICKED_UP:
+            justPickedUp();
+            break;
+        case PICKED_UP:
+            pickedUp();
+            break;
+        case JUST_HUNG_UP:
+            justHungUp();
+            break;
+        case HUNG_UP:
+            hungUp();
+            break;
+    }
     
-    // picked up hook
-    if (hookState == 3)
+    playStuff();
+}
+
+void justPickedUp()
+{
+    #ifdef DEBUG
+    Serial.println("MAIN - Picked up.");
+    #endif
+
+    bell.state(NOT_RINGING);
+
+    time_t alarmTime = clock.alarmTime();
+
+    switch (clock.alarmState()) {
+        case ALARM_OFF:
+            speak.currentTime(hour(), minute());
+            speak.alarmOff();
+            break;
+        case ALARM_ACTIVE:
+            speak.currentTime(hour(), minute());
+            speak.alarmSetTo(hour(alarmTime), minute(alarmTime));
+            break;
+        case ALARM_SNOOZED:
+            speak.alarmSnoozed(inputHelper.startReadingCode());
+            break;
+        case ALARM_TRIGGERED:
+            speak.promptForDeactivationCode(inputHelper.startReadingCode());
+            break;
+    }
+}
+
+void pickedUp()
+{
+    if (dial.available())
     {
-        #ifdef DEBUG
-        Serial.println("Picked up.");
-        #endif
+        speak.stopSpeaking();
+        sound.stopPlaying();
 
-        bell.state(false); // bell must stop, no matter what
-        speak.currentTime(hour(), minute());
+        if (inputHelper.isReading())
+            inputHelper.addDigit(dial.lastNumber());
+    }
 
-        alarmTime = clock.alarmTime();
+    if (inputHelper.hasResult())
+    {
+        switch (inputHelper.status()) {
+            case CODE_OK:
+                clock.unSetAlarm();
+                speak.successMessage(NULL);
 
-        switch (clock.alarmState()) {
-            case ALARM_OFF:
-                speak.alarmSettings();
+                #ifdef DEBUG
+                Serial.println("MAIN - Alarm deactivated.");
+                #endif
+
                 break;
-            case ALARM_ACTIVE:
-                speak.alarmSettings(hour(alarmTime), minute(alarmTime));
+
+            case CODE_INCORRECT:
+                speak.errorMessage(NULL);
+
+                #ifdef DEBUG
+                Serial.println("MAIN - Incorrect deactivation code.");
+                #endif
+
                 break;
-            case ALARM_SNOOZED:
-                speak.alarmSettings(hour(alarmTime), minute(alarmTime));
+
+            case TIME_OK:
+                // l8rz
                 break;
-            case ALARM_TRIGGERED:
-                // snooze/deactivate routine
-                clock.snoozeAlarm(2);
+
+            case NUMBER_OK:
+                // l8rz
                 break;
         }
+
+        inputHelper.stopReading();
+    }
+}
+
+void justHungUp()
+{
+    #ifdef DEBUG
+    Serial.println("MAIN - Hung up.");
+    #endif
+
+    if ((clock.alarmState() == ALARM_TRIGGERED))
+    {
+        clock.snoozeAlarm(1);
+
+        #ifdef DEBUG
+        Serial.println("MAIN - Alarm snoozed.");
+        #endif
     }
 
-    // dialed a number while receiver is picked up
-    if (dial.available() && (hookState == 3 || hookState == 1))
+    inputHelper.stopReading();
+    speak.stopSpeaking();
+    sound.stopPlaying();
+}
+
+void hungUp()
+{
+    if ((clock.alarmState() == ALARM_TRIGGERED) && (bell.state() == NOT_RINGING))
     {
         #ifdef DEBUG
-        Serial.print("dialed: ");
-        Serial.println(dial.lastNumber());
+        Serial.println("MAIN - Alarm triggered.");
         #endif
 
-        speak.stopSpeaking();
-        sound.stopPlaying();
+        bell.state(RINGING);
     }
+}
 
-    // hung up
-    if (hookState == 2)
-    {
-        #ifdef DEBUG
-        Serial.println("Hung up.");
-        #endif
-
-        speak.stopSpeaking();
-        sound.stopPlaying();
-    }
-
-    // play stuff if there is stuff to play
+void playStuff()
+{
     if (speak.isSpeaking() && !sound.isPlaying())
     {
         sound.startPlaying(speak.soundBiteFolderNr(), speak.soundBiteFileNr());

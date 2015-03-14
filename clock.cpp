@@ -18,8 +18,7 @@ void CLOCK::init()
     setSyncProvider(RTC.get);
 
     // read alarm state from RTC
-    currentAlarmState = RTC.readRTC(RTC_CONTROL);
-    currentAlarmState = (currentAlarmState & _BV(A2IE)) >> A2IE;
+    currentAlarmState = readA2IE();
 
     #ifdef DEBUG
     Serial.print("CLOCK - read A2IE: ");
@@ -29,7 +28,8 @@ void CLOCK::init()
 
 void CLOCK::check()
 {
-    if ( RTC.alarm(ALARM_2) ) {
+    // fucky, need to read interrupts
+    if ( RTC.alarm(ALARM_2) && (currentAlarmState != ALARM_OFF) ) {
         alarmState(ALARM_TRIGGERED);
     }
 }
@@ -128,4 +128,12 @@ uint8_t CLOCK::alarmState()
 uint8_t CLOCK::bcd2dec(uint8_t n)
 {
     return n - 6 * (n >> 4);
+}
+
+uint8_t CLOCK::readA2IE()
+{
+    // read alarm state from RTC
+    uint8_t a2ie = RTC.readRTC(RTC_CONTROL);
+    a2ie = (a2ie & _BV(A2IE)) >> A2IE;
+    return a2ie;
 }

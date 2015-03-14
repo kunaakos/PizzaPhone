@@ -62,10 +62,13 @@ uint8_t SPEAK::soundBiteFileNr()
 bool SPEAK::addToQueue(uint8_t folderNr, uint8_t fileNr)
 {
 	#ifdef DEBUG
-	Serial.print("SPEAK - queuing: ");
-	Serial.print(folderNr);
-	Serial.print(" ");
-	Serial.println(fileNr);
+  if (DEBUG)
+    {
+      Serial.print("SPEAK - queuing: ");
+      Serial.print(folderNr);
+      Serial.print(" ");
+      Serial.println(fileNr);
+    }
 	#endif
 
 	if (queueIndex < QUEUE_LENGTH)
@@ -94,26 +97,45 @@ void SPEAK::currentTime(uint8_t hours, uint8_t minutes)
 	sayTime(hours, minutes, false);
 }
 
-void SPEAK::alarmSettings()
+void SPEAK::alarmOff()
 {
   addToQueue(MONDATRESZEK, EBRESZTOORA_NINCS_BEALLITVA);
+  addToQueue(MONDATRESZEK, TARCSAZDBE_EBRESZTES);
 }
 
-void SPEAK::alarmSettings(uint8_t hours, uint8_t minutes)
+void SPEAK::alarmSnoozed(uint8_t code)
+{
+  addToQueue(MONDATRESZEK, SZUNDI);
+  promptForDeactivationCode(code);
+}
+
+void SPEAK::alarmSetTo(uint8_t hours, uint8_t minutes)
 {
   addToQueue(MONDATRESZEK, AZ_EBRESZTOORA);
   sayTime(hours, minutes, true);
   addToQueue(MONDATRESZEK, VAN_BEALLITVA);
+  addToQueue(MONDATRESZEK, UJ_EBRESZTES_IDOPONT);
 }
 
-void SPEAK::promptForNewAlarmSettings()
+void SPEAK::promptForDeactivationCode(uint8_t code)
 {
-
+  addToQueue(MONDATRESZEK, KIKAPCSOLASHOZ_TARCSAZD_BE);
+  sayNumber(code);
+  addToQueue(MONDATRESZEK, KODOT);
 }
 
 void SPEAK::errorMessage(uint8_t error)
 {
+  #ifdef DEBUG
+  Serial.println("SPEAK - playing error message");
+  #endif
+}
 
+void SPEAK::successMessage(uint8_t message)
+{
+  #ifdef DEBUG
+  Serial.println("SPEAK - playing success message");
+  #endif
 }
 
 // These methods are sentence fragments
@@ -147,6 +169,12 @@ void SPEAK::sayTime(uint8_t hours, uint8_t minutes, bool ragozva)
       addToQueue(MONDATRESZEK, SZO_PERC);
     }
   }
+}
+
+
+void SPEAK::sayNumber (uint8_t number)
+{
+  sayNumber(number, false);
 }
 
 // reads number < 60 aloud
