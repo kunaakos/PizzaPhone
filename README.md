@@ -4,6 +4,8 @@
 
 Vintage **rotary phone** converted to a speaking **alarm clock**. Acts and feels like a ["wake-up call"/"morning call" service](http://en.wikipedia.org/wiki/Wake-up_call_%28service%29) : pick up the receiver, listen to a robot voice, dial in your settings, hang up, get a call when it's time to wake up. Clumsier and less reliable than any mobile phone in existence.
 
+![Is that a star-shaped pizza? Yes it is.](http://i.imgur.com/MGI6lTz.jpg)
+
 ##Hardware
 
 #### Arduino
